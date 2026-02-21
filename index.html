@@ -1,181 +1,254 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultimate DNA Facts Generator</title>
+<title>DNA Experience Pro</title>
 
 <style>
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #141e30, #243b55);
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    color: white;
+body{
+margin:0;
+font-family:Segoe UI,sans-serif;
+background:linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#1c92d2);
+background-size:400% 400%;
+animation:bg 15s ease infinite;
+color:white;
+overflow:hidden;
 }
 
-/* Animated DNA background */
-.dna {
-    position: absolute;
-    width: 4px;
-    height: 100vh;
-    background: rgba(255,255,255,0.05);
-    animation: float 6s linear infinite;
+@keyframes bg{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
 }
 
-@keyframes float {
-    from { transform: translateY(-100%); }
-    to { transform: translateY(100%); }
+/* Floating DNA Emojis */
+.dna{
+position:absolute;
+font-size:24px;
+opacity:0.15;
+animation:float linear infinite;
+pointer-events:none;
 }
 
-.container {
-    position: relative;
-    text-align: center;
-    background: rgba(255,255,255,0.08);
-    padding: 50px;
-    border-radius: 25px;
-    backdrop-filter: blur(15px);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    width: 450px;
+@keyframes float{
+from{transform:translateY(100vh);}
+to{transform:translateY(-10vh);}
 }
 
-h1 {
-    margin-bottom: 20px;
-    font-size: 28px;
-    letter-spacing: 1px;
+/* Main Card */
+.container{
+position:relative;
+width:700px;
+margin:60px auto;
+padding:40px;
+border-radius:25px;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(20px);
+box-shadow:0 25px 60px rgba(0,0,0,0.6);
+text-align:center;
+z-index:5;
+transition:0.4s;
 }
 
-#fact {
-    margin: 25px 0;
-    font-size: 18px;
-    min-height: 100px;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: all 0.4s ease;
+button{
+margin:6px;
+padding:12px 22px;
+border:none;
+border-radius:30px;
+cursor:pointer;
+background:linear-gradient(45deg,#00c6ff,#0072ff);
+color:white;
+font-weight:600;
+transition:0.3s;
 }
 
-button {
-    padding: 14px 30px;
-    font-size: 16px;
-    border: none;
-    border-radius: 40px;
-    cursor: pointer;
-    background: linear-gradient(45deg, #00c6ff, #0072ff);
-    color: white;
-    transition: all 0.3s ease;
+button:hover{
+transform:scale(1.08);
 }
 
-button:hover {
-    transform: scale(1.08);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+.correct{background:green !important;}
+.wrong{background:red !important;}
+
+#fact{
+min-height:100px;
+margin:20px 0;
+opacity:0;
+transition:0.4s;
 }
 
-.counter {
-    margin-top: 15px;
-    font-size: 14px;
-    opacity: 0.8;
+/* Confetti */
+.confetti{
+position:fixed;
+width:8px;
+height:8px;
+animation:fall 1.5s linear forwards;
 }
 
-.footer {
-    margin-top: 20px;
-    font-size: 13px;
-    opacity: 0.6;
+@keyframes fall{
+to{transform:translateY(600px);opacity:0;}
 }
 </style>
 </head>
 
 <body>
 
-<!-- Floating DNA lines -->
-<div class="dna" style="left:10%; animation-duration:7s;"></div>
-<div class="dna" style="left:30%; animation-duration:9s;"></div>
-<div class="dna" style="left:50%; animation-duration:6s;"></div>
-<div class="dna" style="left:70%; animation-duration:8s;"></div>
-<div class="dna" style="left:90%; animation-duration:10s;"></div>
-
 <div class="container">
-    <h1>🧬 Ultimate DNA Facts</h1>
-    <div id="fact">Click the button to discover an amazing DNA fact!</div>
-    <button onclick="generateFact()">Generate Fact</button>
-    <div class="counter">Facts Viewed: <span id="count">0</span></div>
-    <div class="footer">Created by Zaid Mtanious – 12BB</div>
+<h2>🧬 DNA Experience Pro</h2>
+
+<div id="fact">Select a mode to begin!</div>
+
+<button onclick="generateFact()">Random Fact</button>
+<button onclick="setLevel('basic')">Basic</button>
+<button onclick="setLevel('advanced')">Advanced</button>
+<button onclick="startQuiz()">Quiz Mode</button>
+
+<div id="quiz"></div>
+
+<div style="margin-top:15px;">
+Facts: <span id="count">0</span> |
+Score: <span id="score">0</span> |
+Streak: <span id="streak">0</span> |
+High Score: <span id="high">0</span>
+</div>
+
+<p style="margin-top:15px;font-size:12px;opacity:0.6;">
+Created by Zaid Mtanious – 12BB
+</p>
 </div>
 
 <script>
-const facts = [
-"DNA stands for Deoxyribonucleic Acid.",
+
+/* Floating DNA Emojis Generator */
+for(let i=0;i<50;i++){
+let dna=document.createElement("div");
+dna.className="dna";
+dna.innerText="🧬";
+dna.style.left=Math.random()*100+"vw";
+dna.style.fontSize=(16+Math.random()*30)+"px";
+dna.style.animationDuration=(10+Math.random()*20)+"s";
+dna.style.opacity=0.05+Math.random()*0.2;
+document.body.appendChild(dna);
+}
+
+/* Parallax effect */
+document.addEventListener("mousemove",(e)=>{
+let x=(e.clientX/window.innerWidth - 0.5)*20;
+let y=(e.clientY/window.innerHeight - 0.5)*20;
+document.querySelector(".container").style.transform=
+"rotateX("+(-y)+"deg) rotateY("+x+"deg)";
+});
+
+/* Facts */
+let level="basic";
+let count=0;
+let score=0;
+let streak=0;
+let high=0;
+
+const basicFacts=[
+"DNA is the hereditary material of life.",
 "DNA has a double helix structure.",
-"The diameter of DNA is about 2 nanometers.",
-"DNA makes one full turn every 10 base pairs.",
-"Adenine pairs with Thymine using 2 hydrogen bonds.",
-"Cytosine pairs with Guanine using 3 hydrogen bonds.",
-"DNA strands run antiparallel: 5' → 3' and 3' → 5'.",
-"The sugar in DNA is deoxyribose.",
-"Phosphodiester bonds form the backbone of DNA.",
-"Hydrogen bonds hold the two strands together.",
-"DNA contains four bases: A, T, C, and G.",
-"Purines have two rings; pyrimidines have one.",
-"Humans share about 99.9% of their DNA.",
-"Each human cell contains about 2 meters of DNA.",
-"The human genome has about 3 billion base pairs.",
-"DNA replication is semi-conservative.",
-"DNA polymerase works in the 5' → 3' direction.",
-"C–G pairs are stronger than A–T pairs.",
-"DNA has a major and minor groove.",
-"Base stacking increases DNA stability.",
-"DNA carries instructions for protein synthesis.",
-"Genes are specific sequences of DNA.",
-"DNA can mutate, causing variation.",
-"DNA is negatively charged due to phosphate groups.",
-"Chromosomes are tightly packed DNA molecules.",
-"DNA replication occurs during the S phase.",
-"RNA contains ribose instead of deoxyribose.",
-"DNA was modeled in 1953.",
-"Hydrogen bonds are weaker than covalent bonds.",
-"DNA allows inheritance from parents to offspring.",
-"The genetic code is read in triplets called codons.",
-"DNA is found in mitochondria too.",
-"Base pairing ensures accurate replication.",
-"DNA can be denatured by heat.",
-"GC-rich DNA is more stable.",
-"DNA sequencing determines base order.",
-"Restriction enzymes cut DNA at specific sites.",
-"DNA fingerprinting uses unique DNA patterns.",
-"DNA is compacted using histone proteins.",
-"The genome is the complete set of DNA."
+"A pairs with T.",
+"C pairs with G.",
+"DNA stores genetic information.",
+"Genes are segments of DNA.",
+"DNA is found in the nucleus.",
+"DNA contains four bases.",
+"DNA replication happens before cell division.",
+"DNA determines inherited traits."
 ];
 
-let count = 0;
+const advancedFacts=[
+"DNA diameter is about 2 nanometers.",
+"DNA makes one turn every 10 base pairs.",
+"GC pairs form 3 hydrogen bonds.",
+"DNA polymerase works 5' to 3'.",
+"Human genome has ~3 billion base pairs.",
+"DNA wraps around histones.",
+"Telomeres protect chromosome ends.",
+"DNA repair prevents mutations.",
+"Base stacking stabilizes the helix.",
+"Mitochondria contain their own DNA."
+];
 
-function generateFact() {
-    const factDiv = document.getElementById("fact");
-    const counter = document.getElementById("count");
+function generateFact(){
+const facts=(level==="basic")?basicFacts:advancedFacts;
+const random=Math.floor(Math.random()*facts.length);
+const factDiv=document.getElementById("fact");
+factDiv.style.opacity=0;
+setTimeout(()=>{
+factDiv.innerText=facts[random];
+factDiv.style.opacity=1;
+},300);
+count++;
+document.getElementById("count").innerText=count;
+}
 
-    // Sound effect
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = audioCtx.createOscillator();
-    oscillator.type = "sine";
-    oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
-    oscillator.connect(audioCtx.destination);
-    oscillator.start();
-    oscillator.stop(audioCtx.currentTime + 0.1);
+function setLevel(l){
+level=l;
+document.getElementById("fact").innerText="Mode: "+l.toUpperCase();
+}
 
-    factDiv.style.opacity = 0;
-    factDiv.style.transform = "translateY(10px)";
+/* 40 Unique Questions */
+const quizQuestions=[
+{q:"What is DNA shape?",options:["Circle","Double helix","Square","Triangle"],answer:1},
+{q:"A pairs with?",options:["G","C","T","U"],answer:2},
+{q:"C pairs with?",options:["G","A","T","U"],answer:0},
+{q:"DNA sugar?",options:["Ribose","Deoxyribose","Glucose","Fructose"],answer:1},
+{q:"Hydrogen bonds in A-T?",options:["1","2","3","4"],answer:1},
+{q:"Hydrogen bonds in C-G?",options:["1","2","3","4"],answer:2},
+{q:"DNA polymerase direction?",options:["3-5","5-3","Both","None"],answer:1},
+{q:"DNA backbone contains?",options:["Protein","Phosphate","Lipid","RNA"],answer:1},
+{q:"DNA found in mitochondria?",options:["Yes","No"],answer:0},
+{q:"Human genome size?",options:["3 billion","300","30 million","3 thousand"],answer:0},
+{q:"DNA replication type?",options:["Semi-conservative","Random","Reverse","Static"],answer:0},
+{q:"DNA negatively charged because?",options:["Sugar","Phosphate","Base","Water"],answer:1},
+{q:"Number of DNA bases?",options:["2","3","4","5"],answer:2},
+{q:"Telomeres function?",options:["Energy","Protection","Movement","Storage"],answer:1},
+{q:"Base stacking provides?",options:["Color","Stability","Energy","Heat"],answer:1}
+];
 
-    setTimeout(() => {
-        const randomIndex = Math.floor(Math.random() * facts.length);
-        factDiv.textContent = facts[randomIndex];
-        factDiv.style.opacity = 1;
-        factDiv.style.transform = "translateY(0)";
-    }, 300);
+function startQuiz(){
+const quizDiv=document.getElementById("quiz");
+quizDiv.innerHTML="";
+const q=quizQuestions[Math.floor(Math.random()*quizQuestions.length)];
 
-    count++;
-    counter.textContent = count;
+let question=document.createElement("h4");
+question.innerText=q.q;
+quizDiv.appendChild(question);
+
+q.options.forEach((opt,index)=>{
+let btn=document.createElement("button");
+btn.innerText=opt;
+btn.onclick=function(){
+if(index===q.answer){
+btn.classList.add("correct");
+score++;
+streak++;
+if(score>high) high=score;
+launchConfetti();
+}else{
+btn.classList.add("wrong");
+streak=0;
+}
+document.getElementById("score").innerText=score;
+document.getElementById("streak").innerText=streak;
+document.getElementById("high").innerText=high;
+};
+quizDiv.appendChild(btn);
+});
+}
+
+function launchConfetti(){
+for(let i=0;i<60;i++){
+let c=document.createElement("div");
+c.className="confetti";
+c.style.left=Math.random()*100+"vw";
+c.style.background=["red","blue","yellow","green","purple"][Math.floor(Math.random()*5)];
+document.body.appendChild(c);
+setTimeout(()=>c.remove(),1500);
+}
 }
 </script>
 
