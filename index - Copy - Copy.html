@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate DNA Facts Generator</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #141e30, #243b55);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+}
+
+/* Animated DNA background */
+.dna {
+    position: absolute;
+    width: 4px;
+    height: 100vh;
+    background: rgba(255,255,255,0.05);
+    animation: float 6s linear infinite;
+}
+
+@keyframes float {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(100%); }
+}
+
+.container {
+    position: relative;
+    text-align: center;
+    background: rgba(255,255,255,0.08);
+    padding: 50px;
+    border-radius: 25px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    width: 450px;
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    letter-spacing: 1px;
+}
+
+#fact {
+    margin: 25px 0;
+    font-size: 18px;
+    min-height: 100px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s ease;
+}
+
+button {
+    padding: 14px 30px;
+    font-size: 16px;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    background: linear-gradient(45deg, #00c6ff, #0072ff);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    transform: scale(1.08);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+.counter {
+    margin-top: 15px;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.footer {
+    margin-top: 20px;
+    font-size: 13px;
+    opacity: 0.6;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Floating DNA lines -->
+<div class="dna" style="left:10%; animation-duration:7s;"></div>
+<div class="dna" style="left:30%; animation-duration:9s;"></div>
+<div class="dna" style="left:50%; animation-duration:6s;"></div>
+<div class="dna" style="left:70%; animation-duration:8s;"></div>
+<div class="dna" style="left:90%; animation-duration:10s;"></div>
+
+<div class="container">
+    <h1>🧬 Ultimate DNA Facts</h1>
+    <div id="fact">Click the button to discover an amazing DNA fact!</div>
+    <button onclick="generateFact()">Generate Fact</button>
+    <div class="counter">Facts Viewed: <span id="count">0</span></div>
+    <div class="footer">Created by Zaid Mtanious – 12BB</div>
+</div>
+
+<script>
+const facts = [
+"DNA stands for Deoxyribonucleic Acid.",
+"DNA has a double helix structure.",
+"The diameter of DNA is about 2 nanometers.",
+"DNA makes one full turn every 10 base pairs.",
+"Adenine pairs with Thymine using 2 hydrogen bonds.",
+"Cytosine pairs with Guanine using 3 hydrogen bonds.",
+"DNA strands run antiparallel: 5' → 3' and 3' → 5'.",
+"The sugar in DNA is deoxyribose.",
+"Phosphodiester bonds form the backbone of DNA.",
+"Hydrogen bonds hold the two strands together.",
+"DNA contains four bases: A, T, C, and G.",
+"Purines have two rings; pyrimidines have one.",
+"Humans share about 99.9% of their DNA.",
+"Each human cell contains about 2 meters of DNA.",
+"The human genome has about 3 billion base pairs.",
+"DNA replication is semi-conservative.",
+"DNA polymerase works in the 5' → 3' direction.",
+"C–G pairs are stronger than A–T pairs.",
+"DNA has a major and minor groove.",
+"Base stacking increases DNA stability.",
+"DNA carries instructions for protein synthesis.",
+"Genes are specific sequences of DNA.",
+"DNA can mutate, causing variation.",
+"DNA is negatively charged due to phosphate groups.",
+"Chromosomes are tightly packed DNA molecules.",
+"DNA replication occurs during the S phase.",
+"RNA contains ribose instead of deoxyribose.",
+"DNA was modeled in 1953.",
+"Hydrogen bonds are weaker than covalent bonds.",
+"DNA allows inheritance from parents to offspring.",
+"The genetic code is read in triplets called codons.",
+"DNA is found in mitochondria too.",
+"Base pairing ensures accurate replication.",
+"DNA can be denatured by heat.",
+"GC-rich DNA is more stable.",
+"DNA sequencing determines base order.",
+"Restriction enzymes cut DNA at specific sites.",
+"DNA fingerprinting uses unique DNA patterns.",
+"DNA is compacted using histone proteins.",
+"The genome is the complete set of DNA."
+];
+
+let count = 0;
+
+function generateFact() {
+    const factDiv = document.getElementById("fact");
+    const counter = document.getElementById("count");
+
+    // Sound effect
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioCtx.createOscillator();
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
+    oscillator.connect(audioCtx.destination);
+    oscillator.start();
+    oscillator.stop(audioCtx.currentTime + 0.1);
+
+    factDiv.style.opacity = 0;
+    factDiv.style.transform = "translateY(10px)";
+
+    setTimeout(() => {
+        const randomIndex = Math.floor(Math.random() * facts.length);
+        factDiv.textContent = facts[randomIndex];
+        factDiv.style.opacity = 1;
+        factDiv.style.transform = "translateY(0)";
+    }, 300);
+
+    count++;
+    counter.textContent = count;
+}
+</script>
+
+</body>
+</html>
